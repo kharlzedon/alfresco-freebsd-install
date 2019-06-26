@@ -19,22 +19,22 @@ export KEYSTOREBASE=http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/
 
 #Change this to prefered locale to make sure it exists. This has impact on LibreOffice transformations
 #export LOCALESUPPORT=sv_SE.UTF-8
-export LOCALESUPPORT=en_US.UTF-8
+export LOCALESUPPORT=en_GB.UTF-8
 
-export JDBCMYSQLURL=http://cdn.mysql.com/Downloads/Connector-J
-export JDBCMYSQL=mysql-connector-java-5.1.34.tar.gz
+export JDBCMYSQLURL=http://ftp.iij.ad.jp/pub/db/mysql/Downloads/Connector-J
+export JDBCMYSQL=mysql-connector-java-8.0.16.tar.gz
 
 export LIBREOFFICE=http://downloadarchive.documentfoundation.org/libreoffice/old/4.2.7.2/deb/x86_64/LibreOffice_4.2.7.2_Linux_x86-64_deb.tar.gz
 export SWFTOOLS=http://www.swftools.org/swftools-2013-04-09-1007.tar.gz
 
-export ALFREPOWAR=https://artifacts.alfresco.com/nexus/service/local/repo_groups/public/content/org/alfresco/alfresco/5.0.c/alfresco-5.0.c.war
-export ALFSHAREWAR=https://artifacts.alfresco.com/nexus/service/local/repo_groups/public/content/org/alfresco/share/5.0.c/share-5.0.c.war
-export GOOGLEDOCSREPO=https://artifacts.alfresco.com/nexus/service/local/repo_groups/public/content/org/alfresco/integrations/alfresco-googledocs-repo/2.0.8/alfresco-googledocs-repo-2.0.8.amp
-export GOOGLEDOCSSHARE=https://artifacts.alfresco.com/nexus/service/local/repo_groups/public/content/org/alfresco/integrations/alfresco-googledocs-share/2.0.8/alfresco-googledocs-share-2.0.8.amp
-export SPP=https://artifacts.alfresco.com/nexus/service/local/repo_groups/public/content/org/alfresco/alfresco-spp/5.0.c/alfresco-spp-5.0.c.amp
+export ALFREPOWAR=https://artifacts.alfresco.com/nexus/service/local/repo_groups/public/content/org/alfresco/alfresco/5.2.f/alfresco-5.2.f.war
+export ALFSHAREWAR=https://artifacts.alfresco.com/nexus/service/local/repo_groups/public/content/org/alfresco/share/5.2.f/share-5.2.f.war
+export GOOGLEDOCSREPO=https://artifacts.alfresco.com/nexus/service/local/repo_groups/public/content/org/alfresco/integrations/alfresco-googledocs-repo/3.0.4.3/alfresco-googledocs-repo-3.0.4.3.amp
+export GOOGLEDOCSSHARE=https://artifacts.alfresco.com/nexus/service/local/repo_groups/public/content/org/alfresco/integrations/alfresco-googledocs-share/3.0.4.3/alfresco-googledocs-share-3.0.4.3.amp
+export SPP=https://artifacts.alfresco.com/nexus/service/local/repo_groups/public/content/org/alfresco/alfresco-spp/5.2.f/alfresco-spp-5.2.f.amp
 
-export SOLR4_CONFIG_DOWNLOAD=https://artifacts.alfresco.com/nexus/service/local/repo_groups/public/content/org/alfresco/alfresco-solr4/5.0.c/alfresco-solr4-5.0.c-config-ssl.zip
-export SOLR4_WAR_DOWNLOAD=https://artifacts.alfresco.com/nexus/service/local/repo_groups/public/content/org/alfresco/alfresco-solr4/5.0.c/alfresco-solr4-5.0.c-ssl.war
+export SOLR4_CONFIG_DOWNLOAD=https://artifacts.alfresco.com/nexus/service/local/repo_groups/public/content/org/alfresco/alfresco-solr4/5.2.f/alfresco-solr4-5.2.f-config-ssl.zip
+export SOLR4_WAR_DOWNLOAD=https://artifacts.alfresco.com/nexus/service/local/repo_groups/public/content/org/alfresco/alfresco-solr4/5.2.f/alfresco-solr4-5.2.f.war
 
 echoblue () {
   printf '\033[1;34;40m'
@@ -55,7 +55,7 @@ echogreen () {
 # Create temp directory
 cd /tmp
 if [ -d "alfrescoinstall" ]; then
-	rm -rf alfrescoinstall
+    rm -rf alfrescoinstall
 fi
 mkdir alfrescoinstall
 cd ./alfrescoinstall
@@ -136,11 +136,11 @@ read -e -p "Install Tomcat [y/N] " INSTALLTOMCAT
 
 if [ "$INSTALLTOMCAT" = "y" ]; then
   echogreen "Installing Tomcat"
-  pkg install -y tomcat7 > /dev/null
+  pkg install -y tomcat9 > /dev/null
  
   # Make sure install dir exists, then create symbolic link
   mkdir -p $ALF_HOME
-  ln -s /usr/local/apache-tomcat-7.0 $CATALINA_HOME
+  ln -s /usr/local/apache-tomcat-9.0 $CATALINA_HOME
 
   # Remove apps not needed
   rm -rf $CATALINA_HOME/webapps/*
@@ -216,17 +216,17 @@ if [ "$INSTALLTOMCAT" = "y" ]; then
   echo
   read -e -p "Install Postgres JDBC Connector [y/N] " INSTALLPG
   if [ "$INSTALLPG" = "y" ]; then
-	  pkg install -y postgresql-jdbc-9.2.1004 > /dev/null
-	  cp /usr/local/share/java/classes/postgresql.jar $CATALINA_HOME/lib
+      pkg install -y postgresql-jdbc-9.2.1004 > /dev/null
+      cp /usr/local/share/java/classes/postgresql.jar $CATALINA_HOME/lib
   fi
   echo
   read -e -p "Install Mysql JDBC Connector [y/N] " INSTALLMY
   if [ "$INSTALLMY" = "y" ]; then
     cd /tmp/alfrescoinstall
-	  curl -# -L -O $JDBCMYSQLURL/$JDBCMYSQL
-	  tar xf $JDBCMYSQL
-	  cd "$(find . -type d -name "mysql-connector*")"
-	  mv mysql-connector*.jar $CATALINA_HOME/lib
+      curl -# -L -O $JDBCMYSQLURL/$JDBCMYSQL
+      tar xf $JDBCMYSQL
+      cd "$(find . -type d -name "mysql-connector*")"
+      mv mysql-connector*.jar $CATALINA_HOME/lib
   fi
 
   chown -LR $ALF_USER:$ALF_GROUP $CATALINA_HOME
@@ -457,7 +457,7 @@ if [ "$INSTALLWAR" = "y" ]; then
 
   read -e -p "Add Google docs integration [y/N] " INSTALLGOOGLEDOCS
   if [ "$INSTALLGOOGLEDOCS" = "y" ]; then
-  	echo "Downloading Google docs addon..."
+    echo "Downloading Google docs addon..."
     curl -# -O $GOOGLEDOCSREPO
     mv alfresco-googledocs-repo*.amp $ALF_HOME/addons/alfresco/
     curl -# -O $GOOGLEDOCSSHARE
